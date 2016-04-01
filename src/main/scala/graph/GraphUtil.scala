@@ -12,4 +12,3 @@ object GraphUtil {
 
 //  case class Graph(nodes: List[Node], edges: List[Edge])
 }
-
