@@ -16,6 +16,8 @@ object ColumnUtil {
   // 5. Remove edges with independents as a source
   // 6. Increase column #
   // 7. Repeat (recursion)
+
+  //  TODO: should we test for nodes with no connections before running columnMapper?  What would such nodes represent?
   def columnMapper(nodes: Set[Int], edges: Array[Edge],
                    col: Int, nodeCols: Map[Int,Set[Int]]): Map[Int,Set[Int]] = {
 

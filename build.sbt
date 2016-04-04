@@ -1,6 +1,8 @@
-//import com.lihaoyi.workbench.Plugin._
+import com.lihaoyi.workbench.Plugin._
 
 enablePlugins(ScalaJSPlugin)
+
+workbenchSettings
 
 name := "DAGvizSF"
 
@@ -14,6 +16,6 @@ libraryDependencies ++= Seq(
   "com.lihaoyi" %%% "scalatags" % "0.5.4"
 )
 
-//bootSnippet := "example.ScalaJSExample().main(document.getElementById('canvas'));"
+bootSnippet := "viz.SJSViz().main(document.getElementById('canvas'));"
 
-//updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
+updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
