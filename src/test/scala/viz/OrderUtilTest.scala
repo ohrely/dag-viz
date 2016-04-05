@@ -1,13 +1,13 @@
 package viz
 
 import graph.GraphUtil._
-import ColumnUtil._
+import OrderUtil._
 import org.scalatest._
 
 /**
   * Created by rely10 on 4/1/16.
   */
-class ColumnUtilTest extends FunSuite{
+class OrderUtilTest extends FunSuite{
   val nodes = Set(0,1,2,3,4)
 
   val edges = Array(
@@ -17,10 +17,7 @@ class ColumnUtilTest extends FunSuite{
     Edge(4, 4, 1, EdgeProps("yes"))
   )
 
-  val nodeCols: Map[Int, Set[Int]] = Map()
-  val col: Int = 0
-
-  var mapped: Map[Int, Set[Int]] = columnMapper(nodes, edges, col, nodeCols)
+  var mapped: Map[Int, Set[Int]] = orderMapper(nodes, edges)
 
   println(mapped)
 }
