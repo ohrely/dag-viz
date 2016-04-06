@@ -9,18 +9,24 @@ import org.scalatest._
   */
 
 class GraphUtilTest extends FunSuite {
-  //def main(args: Array[String]) {
-  val nodes = (1 to 3).toList.map(i => Node(i, NodeProps(i.toString)))
+  println()
 
-  println(nodes)
+  val nodes = (0 to 4).toList.map(i => Node(i, NodeProps(i.toString)))
+  val edges = List(
+    Edge(1, 1, 2, EdgeProps("yes")),
+    Edge(2, 2, 3, EdgeProps("yes")),
+    Edge(3, 1, 3, EdgeProps("yes")),
+    Edge(4, 4, 1, EdgeProps("yes"))
+  )
 
-  val edges = List(Edge(1, 1, 2, EdgeProps("a")),
-    Edge(2, 2, 3, EdgeProps("b")))
+  println("Nodes: " + nodes)
+  println("Edges: " + edges)
 
-  println(edges)
+  val graph = Graph(nodes, edges)
 
-//  val graph = Graph(nodes, edges)
-//
-//  println(graph)
+  println()
+  println("Graph: " + graph)
+  println("Rows: " + graph.rows)
+  println()
 
 }
