@@ -8,11 +8,12 @@ object GraphUtil {
   case class Node(id: Int, props: NodeProps)
   case class Edge(id: Int, source: Int, dest: Int, props: EdgeProps)
 
-  case class NodeProps(name: String)
+  case class NodeProps(name: String, var x: Int = -5, var y: Int = -5)
   case class EdgeProps(edgeName: String)
 
   case class Graph(nodes: List[Node], edges: List[Edge]) {
     val rows: Map[Int, List[Int]] = makeRows(nodes, edges)
+    applyLocations(this)
   }
 
   def makeRows(nodes: List[Node], edges: List[Edge]): Map[Int, List[Int]] = {
@@ -48,4 +49,19 @@ object GraphUtil {
 
     mapRows(rows)
   }
+
+  def applyLocations(graph: Graph): Unit = {
+    graph.rows.foreach {
+      case (y, ynodes) => ynodes.zipWithIndex.foreach {
+        case (id, x) => setLocation(id, x, y)
+      }
+    }
+
+    def setLocation(id: Int, x: Int, y: Int): Unit = {
+      val node: Node = graph.nodes.find(_.id == id).get
+      node.props.x = x
+      node.props.y = y
+    }
+  }
+
 }
