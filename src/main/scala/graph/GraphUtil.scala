@@ -8,7 +8,10 @@ object GraphUtil {
   case class Node(id: Int, props: NodeProps)
   case class Edge(id: Int, source: Int, dest: Int, props: EdgeProps)
 
-  case class NodeProps(name: String, var x: Int = -5, var y: Int = -5)
+  case class NodeProps(name: String) {
+    val x: Int = _
+    val y: Int = _
+  }
   case class EdgeProps(edgeName: String)
 
   case class Graph(nodes: List[Node], edges: List[Edge]) {
@@ -59,8 +62,8 @@ object GraphUtil {
 
     def setLocation(id: Int, x: Int, y: Int): Unit = {
       val node: Node = graph.nodes.find(_.id == id).get
-      node.props.x = x
-      node.props.y = y
+      val node.props.x = x
+      val node.props.y = y
     }
   }
 

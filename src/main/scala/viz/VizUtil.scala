@@ -44,6 +44,10 @@ object VizUtil {
     drawGraph(renderer, graph)
   }
 
+  val CWIDTH: Int = 100
+  val CHEIGHT: Int = 75
+  val CPAD: Int = 40
+
   def drawGraph(renderer: dom.CanvasRenderingContext2D, graph: Graph): Unit = {
     val nodes: List[Node] = graph.nodes
     val edges: List[Edge] = graph.edges
@@ -53,33 +57,52 @@ object VizUtil {
   }
 
   class NodeViz (renderer: dom.CanvasRenderingContext2D, node: Node) {
-    val width: Int = 100
-    val height: Int = 75
-    val pad: Int = 30
-
     val x: Int = node.props.x
     val y: Int = node.props.y
-    val xc: Int = x * width + (x + 1) * pad
-    val yc: Int = y * height + (y + 1) * pad
+    val xc: Int = x * CWIDTH + (x + 1) * CPAD
+    val yc: Int = y * CHEIGHT + (y + 1) * CPAD
 
     val color = "white"
     renderer.fillStyle = color
-    renderer.fillRect(xc, yc, width, height)
+    renderer.fillRect(xc, yc, CWIDTH, CHEIGHT)
+    renderer.font = "20px sans-serif"
+    renderer.textAlign = "center"
+    renderer.textBaseline = "middle"
+    renderer.fillStyle = "black"
+    renderer.fillText(node.props.name, (2 * xc + CWIDTH) / 2, (2 * yc+ CHEIGHT) / 2)
   }
 
   class EdgeViz (renderer: dom.CanvasRenderingContext2D, graph: Graph, edge: Edge) {
-    val source: Int = edge.source
-    val dest: Int = edge.dest
+    val source: Node = graph.nodes.find(_.id == edge.source).get
+    val dest: Node = graph.nodes.find(_.id == edge.dest).get
 
-    def drawEdge(renderer: dom.CanvasRenderingContext2D): Unit = {
+    val sx: Int = source.props.x
+    val sy: Int = source.props.y
+    val dx: Int = dest.props.x
+    val dy: Int = dest.props.y
+
+    val sxc: Int = sx * CWIDTH + CWIDTH/2 + (sx + 1) * CPAD
+    val syc: Int = (sy + 1) * CHEIGHT + (sy + 1) * CPAD
+    val dxc: Int = dx * CWIDTH + CWIDTH/2 + (dx + 1) * CPAD
+    val dyc: Int = syc + CPAD
+
+
+    def drawEdge(): Unit = {
       renderer.strokeStyle = "black"
       renderer.lineWidth = 3
       renderer.beginPath()
-      renderer.moveTo(100, 100)
-      renderer.lineTo(500, 500)
-      renderer.moveTo(150, 150)
-      renderer.bezierCurveTo(200, 400, 600, 400, 650, 650)
+      renderer.moveTo(sxc, syc)
+      renderer.lineTo(dxc, dyc)
+      //  renderer.bezierCurveTo(200, 400, 600, 400, 650, 650)
       renderer.stroke()
+
+      renderer.font = "20px sans-serif"
+      renderer.textAlign = "center"
+      renderer.textBaseline = "middle"
+      renderer.fillStyle = "white"
+      renderer.fillText(edge.props.edgeName, (sxc + dxc) / 2, (syc + dyc) / 2)
     }
+
+    drawEdge()
   }
 }
