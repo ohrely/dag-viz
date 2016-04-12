@@ -2,6 +2,7 @@ package viz
 import javax.swing.Renderer
 
 import graph.GraphUtil._
+import MoreInfo._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
@@ -15,16 +16,16 @@ import org.scalajs.dom.html
 @JSExport
 object VizUtil {
   @JSExport
-  def main(canvas: html.Canvas): Unit = {
+  def main(c: html.Canvas): Unit = {
     /*setup*/
     type Ctx2D = dom.CanvasRenderingContext2D
-    val renderer = canvas.getContext("2d").asInstanceOf[Ctx2D]
+    val ctx = c.getContext("2d").asInstanceOf[Ctx2D]
 
-    canvas.width = canvas.parentElement.clientWidth
-    canvas.height = 800
+    c.width = c.parentElement.clientWidth
+    c.height = 800
 
-    renderer.fillStyle = "#a8d8f8"
-    renderer.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "#a8d8f8"
+    ctx.fillRect(0, 0, c.width, c.height)
 
 //    test ----------------------------------------------------------------
     val nodes = (0 to 7).toList.map(i => Node(i, NodeProps(i.toString)))
@@ -37,11 +38,28 @@ object VizUtil {
       Edge(31, 5, 7, EdgeProps("yes")),
       Edge(32, 6, 7, EdgeProps("yes"))
     )
-    val graph = new GraphViz(nodes, edges)
-//    end test ------------------------------------------------------------
+    val g = new GraphViz(nodes, edges)
 
-//    val graph = ???
-    drawGraph(renderer, graph)
+    drawGraph(ctx, g)
+
+    ctx.fillStyle = "#ffff99"
+    ctx.fillRect(g.rightSpace, 0, c.width - g.rightSpace, c.height)
+
+    val newNodes = (0 to 3).toList.map(i => Node(i, NodeProps(i.toString)))
+    val newEdges = List(
+      Edge(11, 0, 2, EdgeProps("yes")),
+      Edge(12, 1, 2, EdgeProps("yes")),
+      Edge(13, 2, 3, EdgeProps("yes"))
+    )
+    val newGraph = new GraphViz(newNodes, newEdges)
+
+    c.onclick = (e: dom.MouseEvent) => {
+      ctx.fillStyle = "#a8d8f8"
+      ctx.fillRect(0, 0, c.width, c.height)
+      drawGraph(ctx, newGraph)
+    }
+
+    showMore(ctx, g, g.nodes(2))
   }
 
   val CWIDTH: Int = 100
@@ -51,6 +69,8 @@ object VizUtil {
   class GraphViz(val nodes: List[Node], val edges: List[Edge]) extends Graph(nodes, edges) {
     val rows: Map[Int, List[Int]] = makeRows(nodes, edges)
     val locations: Map[Node, (Int, Int)] = applyLocations(this)
+    val numCols = rows.valuesIterator.reduceLeft((a, b) => if (a.length > b.length) a else b).length
+    val rightSpace = numCols * CWIDTH + (numCols + 1) * CPAD
   }
 
   def makeRows(nodes: List[Node], edges: List[Edge]): Map[Int, List[Int]] = {
@@ -87,53 +107,53 @@ object VizUtil {
     mapRows(rows)
   }
 
-  def applyLocations(graph: GraphViz): Map[Node, (Int, Int)] = {
+  def applyLocations(g: GraphViz): Map[Node, (Int, Int)] = {
     var locationsMap = collection.mutable.Map.empty[Node, (Int, Int)]
 
-    graph.rows.foreach {
+    g.rows.foreach {
       case (y, ynodes) => ynodes.zipWithIndex.foreach {
         case (id, x) => setLocation(id, x, y)
       }
     }
 
     def setLocation(id: Int, x: Int, y: Int): Unit = {
-      val node: Node = graph.nodes.find(_.id == id).get
+      val node: Node = g.nodes.find(_.id == id).get
       locationsMap += (node -> (x, y))
     }
 
     locationsMap.toMap
   }
 
-  def drawGraph(renderer: dom.CanvasRenderingContext2D, graph: GraphViz): Unit = {
-    val nodes: List[Node] = graph.nodes
-    val edges: List[Edge] = graph.edges
+  def drawGraph(ctx: dom.CanvasRenderingContext2D, g: GraphViz): Unit = {
+    val nodes: List[Node] = g.nodes
+    val edges: List[Edge] = g.edges
 
-    nodes.foreach(node => new NodeViz(renderer, graph, node))
-    edges.foreach(edge => new EdgeViz(renderer, graph, edge))
+    nodes.foreach(node => new NodeViz(ctx, g, node))
+    edges.foreach(edge => new EdgeViz(ctx, g, edge))
   }
 
   def findNode(graph: GraphViz, node: Node): (Int, Int) = graph.locations(node)
 
-  class NodeViz (renderer: dom.CanvasRenderingContext2D, graph: GraphViz, node: Node) {
-    val (x: Int, y: Int) = findNode(graph, node)
+  class NodeViz (ctx: dom.CanvasRenderingContext2D, g: GraphViz, node: Node) {
+    val (x: Int, y: Int) = findNode(g, node)
     val xc: Int = x * CWIDTH + (x + 1) * CPAD
     val yc: Int = y * CHEIGHT + (y + 1) * CPAD
 
-    renderer.fillStyle = "white"
-    renderer.fillRect(xc, yc, CWIDTH, CHEIGHT)
-    renderer.font = "20px sans-serif"
-    renderer.textAlign = "center"
-    renderer.textBaseline = "middle"
-    renderer.fillStyle = "black"
-    renderer.fillText(node.props.name, (2 * xc + CWIDTH) / 2, (2 * yc+ CHEIGHT) / 2)
+    ctx.fillStyle = "white"
+    ctx.fillRect(xc, yc, CWIDTH, CHEIGHT)
+    ctx.font = "20px sans-serif"
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
+    ctx.fillStyle = "black"
+    ctx.fillText(node.props.name, (2 * xc + CWIDTH) / 2, (2 * yc+ CHEIGHT) / 2)
   }
 
-  class EdgeViz (renderer: dom.CanvasRenderingContext2D, graph: GraphViz, edge: Edge) {
-    val source: Node = graph.nodes.find(_.id == edge.source).get
-    val dest: Node = graph.nodes.find(_.id == edge.dest).get
+  class EdgeViz (ctx: dom.CanvasRenderingContext2D, g: GraphViz, edge: Edge) {
+    val source: Node = g.nodes.find(_.id == edge.source).get
+    val dest: Node = g.nodes.find(_.id == edge.dest).get
 
-    val (sx, sy): (Int, Int) = findNode(graph, source)
-    val (dx, dy): (Int, Int) = findNode(graph, dest)
+    val (sx, sy): (Int, Int) = findNode(g, source)
+    val (dx, dy): (Int, Int) = findNode(g, dest)
 
     val sxc: Int = sx * CWIDTH + CWIDTH/2 + (sx + 1) * CPAD
     val syc: Int = (sy + 1) * CHEIGHT + (sy + 1) * CPAD
@@ -142,19 +162,18 @@ object VizUtil {
 
 
     def drawEdge(): Unit = {
-      renderer.strokeStyle = "black"
-      renderer.lineWidth = 3
-      renderer.beginPath()
-      renderer.moveTo(sxc, syc)
-      renderer.lineTo(dxc, dyc)
-      //  renderer.bezierCurveTo(200, 400, 600, 400, 650, 650)
-      renderer.stroke()
+      ctx.strokeStyle = "black"
+      ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.moveTo(sxc, syc)
+      ctx.bezierCurveTo(sxc, dyc, dxc, syc, dxc, dyc)
+      ctx.stroke()
 
-      renderer.font = "20px sans-serif"
-      renderer.textAlign = "center"
-      renderer.textBaseline = "middle"
-      renderer.fillStyle = "white"
-      renderer.fillText(edge.props.edgeName, (sxc + dxc) / 2, (syc + dyc) / 2)
+      ctx.font = "20px sans-serif"
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      ctx.fillStyle = "white"
+      ctx.fillText(edge.props.edgeName, (sxc + dxc) / 2, (syc + dyc) / 2)
     }
 
     drawEdge()

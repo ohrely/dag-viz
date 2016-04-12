@@ -16,6 +16,6 @@ libraryDependencies ++= Seq(
   "com.lihaoyi" %%% "scalatags" % "0.5.4"
 )
 
-bootSnippet := "viz.VizUtil().main(document.getElementById('canvas'));"
+bootSnippet := "viz.VizUtil().main(document.getElementById('c'));"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)

@@ -24,11 +24,10 @@ class GraphUtilTest extends FunSuite {
   println("Nodes: " + nodes)
   println("Edges: " + edges)
 
-  val graph = Graph(nodes, edges)
+  val graph = new Graph(nodes, edges)
 
   println()
   println("Graph: " + graph)
-  println("Rows: " + graph.rows)
   println()
 
 }
