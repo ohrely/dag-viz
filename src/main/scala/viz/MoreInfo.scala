@@ -13,6 +13,6 @@ object MoreInfo {
     ctx.textAlign = "center"
     ctx.textBaseline = "middle"
     ctx.fillStyle = "black"
-    ctx.fillText(node.props.name, g.rightSpace + CPAD, 100)
+//    ctx.fillText(node.props.name, g.rightSpace + CPAD, 100)
   }
 }

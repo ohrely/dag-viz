@@ -16,6 +16,8 @@ libraryDependencies ++= Seq(
   "com.lihaoyi" %%% "scalatags" % "0.5.4"
 )
 
-bootSnippet := "viz.VizUtil().main(document.getElementById('c'));"
+bootSnippet := "viz.VizUtil().main(document.getElementById('mod'));"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
+
+persistLauncher in Compile := true

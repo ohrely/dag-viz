@@ -7,7 +7,8 @@ import MoreInfo._
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
-import org.scalajs.dom.html
+import org.scalajs.dom.html.{Div, Canvas}
+import scalatags.JsDom.all._
 
 /**
   * Created by rely10 on 3/31/16.
@@ -16,16 +17,17 @@ import org.scalajs.dom.html
 @JSExport
 object VizUtil {
   @JSExport
-  def main(c: html.Canvas): Unit = {
+  def main(mod: Div): Unit = {
+    showGraph(mod)
+  }
+
+  def showGraph(mod: Div): Unit = {
     /*setup*/
-    type Ctx2D = dom.CanvasRenderingContext2D
-    val ctx = c.getContext("2d").asInstanceOf[Ctx2D]
-
-    c.width = c.parentElement.clientWidth
-    c.height = 800
-
-    ctx.fillStyle = "#a8d8f8"
-    ctx.fillRect(0, 0, c.width, c.height)
+    val c = dom.document.createElement("canvas").asInstanceOf[Canvas]
+    mod.appendChild(c)
+    println("check2")
+    val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+    println("check3")
 
 //    test ----------------------------------------------------------------
     val nodes = (0 to 7).toList.map(i => Node(i, NodeProps(i.toString)))
@@ -40,10 +42,16 @@ object VizUtil {
     )
     val g = new GraphViz(nodes, edges)
 
+    c.width = g.width
+    c.height = g.height
+
+    ctx.fillStyle = "#a8d8f8"
+    ctx.fillRect(0, 0, c.width, c.height)
+
     drawGraph(ctx, g)
 
-    ctx.fillStyle = "#ffff99"
-    ctx.fillRect(g.rightSpace, 0, c.width - g.rightSpace, c.height)
+//    ctx.fillStyle = "#ffff99"
+//    ctx.fillRect(g.rightSpace, 0, c.width - g.rightSpace, c.height)
 
     val newNodes = (0 to 3).toList.map(i => Node(i, NodeProps(i.toString)))
     val newEdges = List(
@@ -54,12 +62,15 @@ object VizUtil {
     val newGraph = new GraphViz(newNodes, newEdges)
 
     c.onclick = (e: dom.MouseEvent) => {
+      c.width = newGraph.width
+      c.height = newGraph.height
+
       ctx.fillStyle = "#a8d8f8"
       ctx.fillRect(0, 0, c.width, c.height)
       drawGraph(ctx, newGraph)
     }
 
-    showMore(ctx, g, g.nodes(2))
+//    showMore(ctx, g, g.nodes(2))
   }
 
   val CWIDTH: Int = 100
@@ -70,7 +81,9 @@ object VizUtil {
     val rows: Map[Int, List[Int]] = makeRows(nodes, edges)
     val locations: Map[Node, (Int, Int)] = applyLocations(this)
     val numCols = rows.valuesIterator.reduceLeft((a, b) => if (a.length > b.length) a else b).length
-    val rightSpace = numCols * CWIDTH + (numCols + 1) * CPAD
+    val numRows = rows.keysIterator.reduceLeft((a, b) => if (a > b) a else b) + 1
+    val width = numCols * CWIDTH + (numCols + 1) * CPAD
+    val height = numRows * CHEIGHT + (numRows + 1) * CPAD
   }
 
   def makeRows(nodes: List[Node], edges: List[Edge]): Map[Int, List[Int]] = {
