@@ -1,18 +1,20 @@
 package viz
 import VizUtil._
 import graph.GraphUtil._
+import GraphVizUtil._
 import org.scalajs.dom
 import org.scalajs.dom.html
+import org.scalajs.dom.html.{Div, Table}
 
 /**
   * Created by rely10 on 4/11/16.
   */
 object MoreInfo {
-  def showMore (ctx: dom.CanvasRenderingContext2D, g: GraphViz, node: Node): Unit = {
-    ctx.font = "20px sans-serif"
-    ctx.textAlign = "center"
-    ctx.textBaseline = "middle"
-    ctx.fillStyle = "black"
-//    ctx.fillText(node.props.name, g.rightSpace + CPAD, 100)
+  def moreNode (tdiv: Div, g: GraphViz, node: Node): Unit = {
+    val t = dom.document.createElement("table").asInstanceOf[Table]
+
+//    put node data into table
+
+    tdiv.appendChild(t)
   }
 }
