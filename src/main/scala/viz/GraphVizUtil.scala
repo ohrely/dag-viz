@@ -8,11 +8,14 @@ import org.scalajs.dom
   * Created by rely10 on 4/13/16.
   */
 object GraphVizUtil {
+  /*change these to safely alter size & spacing of graph elements*/
   val CWIDTH: Int = 100
   val CHEIGHT: Int = 75
   val CPAD: Int = 40
 
   class GraphViz(val nodes: List[Node], val edges: List[Edge]) extends Graph(nodes, edges) {
+    /*Graph class, now with information about visualizing!*/
+
     val rows: Map[Int, List[Int]] = makeRows(nodes, edges)
     val locations: Map[Node, (Int, Int)] = applyLocations(this)
     val numCols = rows.valuesIterator.reduceLeft((a, b) => if (a.length > b.length) a else b).length
@@ -23,6 +26,8 @@ object GraphVizUtil {
   }
 
   def makeRows(nodes: List[Node], edges: List[Edge]): Map[Int, List[Int]] = {
+    /*recursively determine location of nodes in graph visualization*/
+//    TODO: prevent edge crossing
     var rows = collection.mutable.Map.empty[Int, List[Int]]
     var i: Int = 0
 
@@ -57,6 +62,7 @@ object GraphVizUtil {
   }
 
   def applyLocations(g: GraphViz): Map[Node, (Int, Int)] = {
+    /*create handy map of nodes as keys and grid coordinates as values*/
     var locationsMap = MMap.empty[Node, (Int, Int)]
 
     g.rows.foreach {
@@ -80,33 +86,42 @@ object GraphVizUtil {
     nodes.foreach(node => new NodeViz(ctx, g, node))
     edges.foreach(edge => new EdgeViz(ctx, g, edge))
 
+//    TODO: is there a better place to put this?
     g.nodeTracker.toMap
   }
 
   def findNode(graph: GraphViz, node: Node): (Int, Int) = graph.locations(node)
 
   def trackNode(node: Node, xc: Int, yc: Int, nodeTracker: MMap[(Int, Int), MMap[(Int, Int), Node]]): Unit = {
+    /*add a node to the nodeTracker - mapped to coordinates*/
     val yMap = nodeTracker.getOrElseUpdate((yc, yc + CHEIGHT), MMap.empty[(Int, Int), Node])
     yMap += ((xc, xc + CWIDTH) -> node)
   }
 
   class NodeViz (ctx: dom.CanvasRenderingContext2D, g: GraphViz, node: Node) {
+    /*calculate coordinates, draw a node on the canvas, track where it was drawn*/
+
     val (x: Int, y: Int) = findNode(g, node)
     val xc: Int = x * CWIDTH + (x + 1) * CPAD
     val yc: Int = y * CHEIGHT + (y + 1) * CPAD
 
-    ctx.fillStyle = "white"
-    ctx.fillRect(xc, yc, CWIDTH, CHEIGHT)
-    ctx.font = "20px sans-serif"
-    ctx.textAlign = "center"
-    ctx.textBaseline = "middle"
-    ctx.fillStyle = "black"
-    ctx.fillText(node.props.name, (2 * xc + CWIDTH) / 2, (2 * yc+ CHEIGHT) / 2)
+    def drawNode(): Unit = {
+      ctx.fillStyle = "white"
+      ctx.fillRect(xc, yc, CWIDTH, CHEIGHT)
+      ctx.font = "20px sans-serif"
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      ctx.fillStyle = "black"
+      ctx.fillText(node.props.name, (2 * xc + CWIDTH) / 2, (2 * yc + CHEIGHT) / 2)
+    }
 
+    drawNode()
     trackNode(node, xc, yc, g.nodeTracker)
   }
 
   class EdgeViz (ctx: dom.CanvasRenderingContext2D, g: GraphViz, edge: Edge) {
+    /*calculate coordinates and draw an edge on the canvas*/
+
     val source: Node = g.nodes.find(_.id == edge.source).get
     val dest: Node = g.nodes.find(_.id == edge.dest).get
 
@@ -124,6 +139,7 @@ object GraphVizUtil {
       ctx.lineWidth = 3
       ctx.beginPath()
       ctx.moveTo(sxc, syc)
+//      TODO: could be cuter
       ctx.bezierCurveTo(sxc, dyc, dxc, dyc - CPAD, dxc, dyc)
       ctx.stroke()
 

@@ -1,15 +1,11 @@
 package viz
 
-import graph.GraphUtil.Node
+import graph.GraphUtil._
 import GraphVizUtil._
 
-import scala.collection.mutable.{Map => MMap}
+import org.scalajs.dom
 import scala.scalajs.js.annotation.JSExport
 
-//import graph.GraphUtil._
-//import VizUtil._
-//import GraphVizUtil._
-//import org.scalajs.dom
 //import org.scalajs.dom.html
 //import org.scalajs.dom.html.{Div, Table}
 
@@ -34,10 +30,11 @@ object MoreInfo {
 //    tdiv.appendChild(t)
 //  }
 
-  def findClick(g: GraphViz, click: ???): Unit = {
-    val clickX: Int = ???
-    val clickY: Int = ???
+  def handleClick(g: GraphViz, click: dom.MouseEvent): Unit = {
+    val clickX: Int = click.clientX.toInt
+    val clickY: Int = click.clientY.toInt
 
+    /*find click in nodeTracker*/
     val ySlots = g.nodeTracker.keys
 
     if (ySlots.exists(slot => (slot._1 <= clickY) && (clickY <= slot._2))) {
@@ -56,7 +53,8 @@ object MoreInfo {
   }
 
   def showNode(node: Node): Unit = {
-
+//    TODO: display node data in table to right of graph
+    println(node.props.name)
   }
 
 }

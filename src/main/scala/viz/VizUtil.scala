@@ -1,15 +1,12 @@
 package viz
-import javax.swing.Renderer
 
 import graph.GraphUtil._
 import GraphVizUtil._
 import MoreInfo._
 
-import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 import org.scalajs.dom
 import org.scalajs.dom.html.{Div, Canvas}
-import scalatags.JsDom.all._
 
 /**
   * Created by rely10 on 3/31/16.
@@ -25,7 +22,7 @@ object VizUtil {
 
   @JSExport
   def showGraph(mod: Div): Unit = {
-    /*setup*/
+    /*canvas setup*/
     val c = dom.document.createElement("canvas").asInstanceOf[Canvas]
     mod.appendChild(c)
     val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
@@ -51,26 +48,24 @@ object VizUtil {
 
     drawGraph(ctx, g)
 
-    val newNodes = (0 to 3).toList.map(i => Node(i, NodeProps(i.toString)))
-    val newEdges = List(
-      Edge(11, 0, 2, EdgeProps("yes")),
-      Edge(12, 1, 2, EdgeProps("yes")),
-      Edge(13, 2, 3, EdgeProps("yes"))
-    )
-    val newGraph = new GraphViz(newNodes, newEdges)
+//    val newNodes = (0 to 3).toList.map(i => Node(i, NodeProps(i.toString)))
+//    val newEdges = List(
+//      Edge(11, 0, 2, EdgeProps("yes")),
+//      Edge(12, 1, 2, EdgeProps("yes")),
+//      Edge(13, 2, 3, EdgeProps("yes"))
+//    )
+//    val newGraph = new GraphViz(newNodes, newEdges)
+//    end test ------------------------------------------------------------
 
+    /*add listener to display data of element user clicks on*/
     c.onclick = (e: dom.MouseEvent) => {
-      c.width = newGraph.width
-      c.height = newGraph.height
-
-      ctx.fillStyle = "#a8d8f8"
-      ctx.fillRect(0, 0, c.width, c.height)
-      drawGraph(ctx, newGraph)
+      handleClick(g, e)
     }
   }
 
   @JSExport
   def showMore(mod: Div): Unit = {
+    /*moreInfo space setup*/
     val tdiv = dom.document.createElement("div")
     tdiv.id = "tdiv"
     mod.appendChild(tdiv)
