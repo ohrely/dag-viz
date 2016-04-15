@@ -60,27 +60,20 @@ object MoreInfo {
   def showData(node: Node): Unit = {
 //    TODO: display node data table to right of graph
 
+    def schema: Array[String] = node.props.schema
+    def rows: Array[Array[String]] = node.props.rows
+
     val t = {
       table(
         caption(node.props.name),
         thead(
           tr(
-           td("Head1"),
-           td("Head2")
+            for (scheme <- schema) yield td(scheme)
           )
         ),
         tbody(
-          tr(
-            td("Yes"),
-            td("Maybe")
-          ),
-          tr(
-            td("Yes"),
-            td("Maybe")
-          ),
-          tr(
-            td("Yes"),
-            td("Maybe")
+          for (row <- rows) yield tr(
+            for (thing <- row) yield td(thing)
           )
         )
       )

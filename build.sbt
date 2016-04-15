@@ -13,7 +13,9 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test" withSources(),
   "org.scala-js" %%% "scalajs-dom" % "0.8.2",
-  "com.lihaoyi" %%% "scalatags" % "0.5.4"
+  "com.lihaoyi" %%% "scalatags" % "0.5.4",
+  "org.apache.spark" %% "spark-core" % "1.6.1",
+  "org.apache.spark" %% "spark-sql" % "1.6.1"
 )
 
 bootSnippet := "viz.VizUtil().main(document.getElementById('mod'));"

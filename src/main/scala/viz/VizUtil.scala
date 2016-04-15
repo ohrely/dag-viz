@@ -28,7 +28,7 @@ object VizUtil {
     val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
 
 //    test ----------------------------------------------------------------
-    val nodes = (0 to 7).toList.map(i => Node(i, NodeProps(i.toString)))
+    val nodes = (0 to 7).toList.map(i => Node(i, NodeProps(i.toString, (0 to i).toArray.map(i => i.toString), (0 to 3).toArray.map(x => (0 to i).toArray.map(i => (12 - i).toString)))))
     val edges = List(
       Edge(11, 0, 3, EdgeProps("yes")),
       Edge(12, 1, 4, EdgeProps("yes")),
