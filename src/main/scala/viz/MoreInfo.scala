@@ -6,8 +6,12 @@ import GraphVizUtil._
 import org.scalajs.dom
 import scala.scalajs.js.annotation.JSExport
 
+import scalatags.JsDom._
+import scalatags._
+import scalatags.Text.all._
+
 //import org.scalajs.dom.html
-//import org.scalajs.dom.html.{Div, Table}
+import org.scalajs.dom.html.{Div, Table}
 
 /**
   * Created by rely10 on 4/11/16.
@@ -47,14 +51,42 @@ object MoreInfo {
 
         val clicked: Node = g.nodeTracker(ySlot)(xSlot)
 
-        showNode(clicked)
+        showData(clicked)
       }
     }
   }
 
-  def showNode(node: Node): Unit = {
-//    TODO: display node data in table to right of graph
-    println(node.props.name)
+  @JSExport
+  def showData(node: Node): Unit = {
+//    TODO: display node data table to right of graph
+
+    val t = {
+      table(
+        caption(node.props.name),
+        thead(
+          tr(
+           td("Head1"),
+           td("Head2")
+          )
+        ),
+        tbody(
+          tr(
+            td("Yes"),
+            td("Maybe")
+          ),
+          tr(
+            td("Yes"),
+            td("Maybe")
+          ),
+          tr(
+            td("Yes"),
+            td("Maybe")
+          )
+        )
+      )
+    }
+
+    dom.document.getElementById("tdiv").innerHTML = t.render
   }
 
 }
