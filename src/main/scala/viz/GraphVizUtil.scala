@@ -1,6 +1,7 @@
 package viz
 
 import graph.GraphUtil.{Edge, Graph, Node}
+import scala.collection.mutable.{Map => MMap}
 import org.scalajs.dom
 
 /**
@@ -16,6 +17,7 @@ object GraphVizUtil {
     val locations: Map[Node, (Int, Int)] = applyLocations(this)
     val numCols = rows.valuesIterator.reduceLeft((a, b) => if (a.length > b.length) a else b).length
     val numRows = rows.keysIterator.reduceLeft((a, b) => if (a > b) a else b) + 1
+    val nodeTracker = MMap.empty[(Int, Int), MMap[(Int, Int), Node]]
     val width = numCols * CWIDTH + (numCols + 1) * CPAD
     val height = numRows * CHEIGHT + (numRows + 1) * CPAD
   }
@@ -55,7 +57,7 @@ object GraphVizUtil {
   }
 
   def applyLocations(g: GraphViz): Map[Node, (Int, Int)] = {
-    var locationsMap = collection.mutable.Map.empty[Node, (Int, Int)]
+    var locationsMap = MMap.empty[Node, (Int, Int)]
 
     g.rows.foreach {
       case (y, ynodes) => ynodes.zipWithIndex.foreach {
@@ -77,9 +79,16 @@ object GraphVizUtil {
 
     nodes.foreach(node => new NodeViz(ctx, g, node))
     edges.foreach(edge => new EdgeViz(ctx, g, edge))
+
+    g.nodeTracker.toMap
   }
 
   def findNode(graph: GraphViz, node: Node): (Int, Int) = graph.locations(node)
+
+  def trackNode(node: Node, xc: Int, yc: Int, nodeTracker: MMap[(Int, Int), MMap[(Int, Int), Node]]): Unit = {
+    val yMap = nodeTracker.getOrElseUpdate((yc, yc + CHEIGHT), MMap.empty[(Int, Int), Node])
+    yMap += ((xc, xc + CWIDTH) -> node)
+  }
 
   class NodeViz (ctx: dom.CanvasRenderingContext2D, g: GraphViz, node: Node) {
     val (x: Int, y: Int) = findNode(g, node)
@@ -93,6 +102,8 @@ object GraphVizUtil {
     ctx.textBaseline = "middle"
     ctx.fillStyle = "black"
     ctx.fillText(node.props.name, (2 * xc + CWIDTH) / 2, (2 * yc+ CHEIGHT) / 2)
+
+    trackNode(node, xc, yc, g.nodeTracker)
   }
 
   class EdgeViz (ctx: dom.CanvasRenderingContext2D, g: GraphViz, edge: Edge) {

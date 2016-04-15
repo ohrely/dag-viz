@@ -23,6 +23,7 @@ object VizUtil {
     showMore(mod)
   }
 
+  @JSExport
   def showGraph(mod: Div): Unit = {
     /*setup*/
     val c = dom.document.createElement("canvas").asInstanceOf[Canvas]
@@ -68,8 +69,10 @@ object VizUtil {
     }
   }
 
+  @JSExport
   def showMore(mod: Div): Unit = {
-    val tdiv = dom.document.createElement("div").asInstanceOf[Div]
+    val tdiv = dom.document.createElement("div")
+    tdiv.id = "tdiv"
     mod.appendChild(tdiv)
   }
 }
