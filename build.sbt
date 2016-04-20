@@ -21,5 +21,3 @@ libraryDependencies ++= Seq(
 bootSnippet := "viz.VizUtil().main(document.getElementById('mod'));"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
-
-persistLauncher in Compile := true

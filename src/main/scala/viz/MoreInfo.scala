@@ -6,12 +6,7 @@ import GraphVizUtil._
 import org.scalajs.dom
 import scala.scalajs.js.annotation.JSExport
 
-import scalatags.JsDom._
-import scalatags._
 import scalatags.Text.all._
-
-//import org.scalajs.dom.html
-import org.scalajs.dom.html.{Div, Table}
 
 /**
   * Created by rely10 on 4/11/16.
@@ -19,21 +14,6 @@ import org.scalajs.dom.html.{Div, Table}
 
 @JSExport
 object MoreInfo {
-//  @JSExport
-//  def moreNode (tdiv: Div, g: GraphViz, node: Node): Unit = {
-//    val nodeName: String = node.props.name
-//    val nodeData: Map = ???
-//
-//    val t = dom.document.createElement("table").asInstanceOf[Table]
-////    put rows into table
-////    https://github.com/scala-js/scala-js-dom/blob/master/src/main/scala/org/scalajs/dom/raw/Html.scala
-////    t.caption = nodeName
-//    t.tHead = ???
-//    t.insertRow(-1)
-//
-//    tdiv.appendChild(t)
-//  }
-
   def handleClick(g: GraphViz, click: dom.MouseEvent): Unit = {
     val clickX: Int = click.clientX.toInt
     val clickY: Int = click.clientY.toInt
@@ -81,5 +61,4 @@ object MoreInfo {
 
     dom.document.getElementById("tdiv").innerHTML = t.render
   }
-
 }

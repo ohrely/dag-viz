@@ -8,6 +8,7 @@ import org.scalajs.dom
   * Created by rely10 on 4/13/16.
   */
 object GraphVizUtil {
+
   /*change these to safely alter size & spacing of graph elements*/
   val CWIDTH: Int = 100
   val CHEIGHT: Int = 75
@@ -28,13 +29,13 @@ object GraphVizUtil {
   def makeRows(nodes: List[Node], edges: List[Edge]): Map[Int, List[Int]] = {
     /*recursively determine location of nodes in graph visualization*/
 //    TODO: prevent edge crossing
-    var rows = collection.mutable.Map.empty[Int, List[Int]]
+    val emptyRows = Map.empty[Int, List[Int]]
     var i: Int = 0
 
     var nodesToMap: Set[Int] = nodes.map(_.id).toSet
     var edgesToMap: Set[Edge] = edges.toSet
 
-    def mapRows(rows: collection.mutable.Map[Int, List[Int]]): Map[Int, List[Int]] = {
+    def mapRows(rows: Map[Int, List[Int]]): Map[Int, List[Int]] = {
       // If there are still nodes to add to Map:
       // 1. Set of all remaining destinations
       // 2. Find remaining nodes that are not a remaining destination (independents)
@@ -45,25 +46,26 @@ object GraphVizUtil {
       // 7. Repeat (recursion)
       //  TODO: should we test for nodes with no connections before running? What would such nodes represent?
 
-      if (nodesToMap.isEmpty: Boolean) rows.toMap else {
+      if (nodesToMap.isEmpty: Boolean) rows else {
         val dests: Set[Int] = edgesToMap.map(_.dest)
         val independents: Set[Int] = nodesToMap -- dests
 
-        rows += (i -> independents.toList)
+        val newRows = rows + (i -> independents.toList)
         nodesToMap = nodesToMap -- independents
         edgesToMap = edgesToMap.filter(nodesToMap contains _.source)
         i += 1
 
-        mapRows(rows)
+        mapRows(newRows)
       }
     }
 
-    mapRows(rows)
+    mapRows(emptyRows)
   }
 
   def applyLocations(g: GraphViz): Map[Node, (Int, Int)] = {
     /*create handy map of nodes as keys and grid coordinates as values*/
-    var locationsMap = MMap.empty[Node, (Int, Int)]
+    //TODO: Make this a non-mutable structure
+    val locationsMap = MMap.empty[Node, (Int, Int)]
 
     g.rows.foreach {
       case (y, ynodes) => ynodes.zipWithIndex.foreach {
