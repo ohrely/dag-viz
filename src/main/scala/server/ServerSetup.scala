@@ -1,15 +1,23 @@
+package server
+
 /**
   * Created by rely10 on 4/25/16.
   */
+import graph.GraphUtil._
 import org.http4s._
 import org.http4s.dsl._
 import org.http4s.server.blaze.BlazeBuilder
+import org.scalajs.dom
+
+import scala.scalajs.js.annotation.JSExport
 
 
+@JSExport
 object SimpleService {
+  @JSExport
   val service = HttpService {
     case GET -> Root =>
-      Ok("Hello world.")
+      viz.VizUtil.main(dom.document.getElementById("mod"), graph.TestGraph.graph)
   }
 }
 
@@ -19,6 +27,10 @@ object SimpleServer {
       .bindHttp(port)
       .mountService(SimpleService.service, "/")
       .run
+  }
+
+  def runVizOnPort(graph: Graph, port: Int) = {
+
   }
 
   def main(args: Array[String]) = {

@@ -1,6 +1,6 @@
-package graph
+package graphpack
 
-import graph.GraphUtil._
+import graphpack.GraphUtil._
 import org.scalatest._
 
 /**

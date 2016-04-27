@@ -1,6 +1,6 @@
 package viz
 
-import graph.GraphUtil._
+import graphpack.GraphUtil._
 import GraphVizUtil._
 
 import org.scalajs.dom
@@ -38,7 +38,7 @@ object MoreInfo {
 
   @JSExport
   def showData(node: Node): Unit = {
-//    TODO: display node data table to right of graph
+//    TODO: display node data table to right of graphpack
 
     def schema: Array[String] = node.props.schema
     def rows: Array[Array[String]] = node.props.rows

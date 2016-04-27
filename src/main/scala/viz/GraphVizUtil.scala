@@ -1,6 +1,6 @@
 package viz
 
-import graph.GraphUtil.{Edge, Graph, Node}
+import graphpack.GraphUtil._
 import scala.collection.mutable.{Map => MMap}
 import org.scalajs.dom
 
@@ -9,25 +9,27 @@ import org.scalajs.dom
   */
 object GraphVizUtil {
 
-  /*change these to safely alter size & spacing of graph elements*/
+  /*change these to safely alter size & spacing of graphpack elements*/
   val CWIDTH: Int = 100
   val CHEIGHT: Int = 75
   val CPAD: Int = 40
 
-  class GraphViz(val nodes: List[Node], val edges: List[Edge]) extends Graph(nodes, edges) {
-    /*Graph class, now with information about visualizing!*/
+  class GraphViz(g: Graph) {
+    val nodes: List[Node] = g.nodes
+    val edges: List[Edge] = g.edges
 
     val rows: Map[Int, List[Int]] = makeRows(nodes, edges)
     val locations: Map[Node, (Int, Int)] = applyLocations(this)
     val numCols = rows.valuesIterator.reduceLeft((a, b) => if (a.length > b.length) a else b).length
     val numRows = rows.keysIterator.reduceLeft((a, b) => if (a > b) a else b) + 1
     val nodeTracker = MMap.empty[(Int, Int), MMap[(Int, Int), Node]]
+
     val width = numCols * CWIDTH + (numCols + 1) * CPAD
     val height = numRows * CHEIGHT + (numRows + 1) * CPAD
   }
 
   def makeRows(nodes: List[Node], edges: List[Edge]): Map[Int, List[Int]] = {
-    /*recursively determine location of nodes in graph visualization*/
+    /*recursively determine location of nodes in graphpack visualization*/
 //    TODO: prevent edge crossing
     val emptyRows = Map.empty[Int, List[Int]]
     var i: Int = 0
