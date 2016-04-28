@@ -98,6 +98,7 @@ object GraphVizUtil {
 
   def trackNode(node: Node, xc: Int, yc: Int, nodeTracker: MMap[(Int, Int), MMap[(Int, Int), Node]]): Unit = {
     /*add a node to the nodeTracker - mapped to coordinates*/
+//    TODO: doesn't account for any situation where canvas is not first element on page
     val yMap = nodeTracker.getOrElseUpdate((yc, yc + CHEIGHT), MMap.empty[(Int, Int), Node])
     yMap += ((xc, xc + CWIDTH) -> node)
   }

@@ -25,6 +25,6 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.0.3"
 )
 
-bootSnippet := "viz.VizUtil().main(document.getElementById('mod'));"
+bootSnippet := "viz.VizUtil().main();"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
