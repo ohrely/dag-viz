@@ -4,7 +4,6 @@ import graphpack.GraphUtil._
 import GraphVizUtil._
 
 import org.scalajs.dom
-import scala.scalajs.js.annotation.JSExport
 
 import scalatags.Text.all._
 
@@ -12,7 +11,6 @@ import scalatags.Text.all._
   * Created by rely10 on 4/11/16.
   */
 
-@JSExport
 object MoreInfo {
   def handleClick(g: GraphViz, click: dom.MouseEvent): Unit = {
     val clickX: Int = click.clientX.toInt
@@ -36,7 +34,6 @@ object MoreInfo {
     }
   }
 
-  @JSExport
   def showData(node: Node): Unit = {
 //    TODO: display node data table to right of graphpack
 

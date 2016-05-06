@@ -10,6 +10,7 @@ import org.http4s._
 import org.http4s.dsl._
 import org.http4s.server.blaze.BlazeBuilder
 import scalaz.concurrent.Task
+import scala.concurrent.Future
 
 //import scalaz.stream.time.awakeEvery
 //import scala.concurrent.duration._
@@ -30,6 +31,10 @@ class SimpleService(graph: Graph){
 //      VizUtil.main(graph)
 ////      pass viz to page
       fetchResource(resourcePath, req)
+
+//      StaticFile.fromResource(resourcePath, Some(req))
+//        .map(Task.apply)
+//        .getOrElse(Ok("Nooooooo."))
 
 //    case req @ GET -> Root / "slow-body" =>
 //      val resp = "Hello world!".map(_.toString())
