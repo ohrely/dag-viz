@@ -29,13 +29,11 @@ class GraphService(graph: Graph){
 
   def service = HttpService {
     case req @ GET -> Root =>
-      val resourcePath = "/index-dev.html"
-////      turn graph into viz
-//      VizUtil.main(graph)
-////      pass viz to page
-//      val index = fetchResource(resourcePath, req)
+      fetchResource("/index-dev.html", req)
 
-      fetchResource(resourcePath, req)
+    //  goes to "resources" folder to retrieve requested static file
+    case req @ GET -> path =>
+      fetchResource(path.toString, req)
 
 //    case req @ GET -> Root / "slow-body" =>
 //      val resp = "Hello world!".map(_.toString())

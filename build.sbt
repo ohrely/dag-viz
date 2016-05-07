@@ -20,7 +20,6 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "1.6.1",
   "org.apache.spark" %% "spark-sql" % "1.6.1",
 
-// TODO: approval
   "org.http4s" %% "http4s-dsl" % http4sVersion,
   "org.http4s" %% "http4s-server" % http4sVersion,
   "org.http4s" %% "http4s-blaze-server" % http4sVersion,
@@ -39,4 +38,4 @@ bootSnippet := "viz.VizUtil().main();"
 
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
 
-persistLauncher in Compile := true
+//persistLauncher in Compile := true
