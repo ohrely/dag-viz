@@ -15,7 +15,6 @@ val http4sVersion = "0.13.2"
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test" withSources(),
   "org.scala-js" %%% "scalajs-dom" % "0.8.2",
-// TODO: approval
   "com.lihaoyi" %%% "scalatags" % "0.5.4",
   "org.apache.spark" %% "spark-core" % "1.6.1",
   "org.apache.spark" %% "spark-sql" % "1.6.1",
@@ -26,16 +25,15 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.0.13"
 )
 
-//persistLauncher := true
+persistLauncher := true
 //persistLauncher in Test := false
+//persistLauncher in Compile := true
 
 bootSnippet := "viz.VizUtil().main();"
-
 //mainClass in (Compile, run) := Some("viz.VizUtil().main()")
 
-// configure a specific directory for scalajs output - TODO: make work
-//val scalajsOutputDir = Def.settingKey[File]("main/resources")
+updateBrowsers <<= updateBrowsers.triggeredBy(fullOptJS in Compile)
 
-updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
+// May ultimately be the better way to go:
+// val scalajsOutputDir = Def.settingKey[File](resourceDirectory.toString)
 
-//persistLauncher in Compile := true

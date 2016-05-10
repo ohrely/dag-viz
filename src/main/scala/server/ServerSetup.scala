@@ -5,23 +5,22 @@ package server
   */
 import graphpack.GraphUtil._
 import graphpack.TestGraph.test_graph
-import viz.VizUtil
 import org.http4s._
 import org.http4s.dsl._
 import org.http4s.server.blaze.BlazeBuilder
-import org.http4s.headers.`Content-Type`
-import org.http4s.MediaType._
 import scalaz.concurrent.Task
-import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
+//import scala.concurrent.{ExecutionContext, Future}
+//import scala.concurrent.ExecutionContext.Implicits.global
+//import org.http4s.headers.`Content-Type`
+//import org.http4s.MediaType._
 //import scalaz.stream.time.awakeEvery
 //import scala.concurrent.duration._
 
 
 class GraphService(graph: Graph){
-  def fetchResource(path: String, req: Request) = {
-    StaticFile.fromResource(path, Some(req))
+  def fetchStatic(path: String, req: Request) = {
+    StaticFile.fromString(path, Some(req))
       .map(Task.now)
       .getOrElse(Ok("Nooooooo."))
 //      .getOrElse(NotFound())
@@ -29,11 +28,10 @@ class GraphService(graph: Graph){
 
   def service = HttpService {
     case req @ GET -> Root =>
-      fetchResource("/index-dev.html", req)
+      fetchStatic("src/main/resources/index-dev.html", req)
 
-    //  goes to "resources" folder to retrieve requested static file
     case req @ GET -> path =>
-      fetchResource(path.toString, req)
+      fetchStatic("target/scala-2.11" + path.toString, req)
 
 //    case req @ GET -> Root / "slow-body" =>
 //      val resp = "Hello world!".map(_.toString())
