@@ -10,6 +10,9 @@ import org.scalajs.dom
 import org.scalajs.dom._
 import org.scalajs.dom.html.{Div, Canvas}
 
+import org.http4s.Request
+import org.http4s.Uri.uri
+
 /**
   * Created by rely10 on 3/31/16.
   */
@@ -35,6 +38,9 @@ object VizUtil extends js.JSApp {
     val tdiv = document.createElement("div").asInstanceOf[Div]
     tdiv.id = "tdiv"
     mod.appendChild(tdiv)
+
+//  ask server for graph (string for now) (request) -> when (string/json) is returned (callback), display it
+
   }
 
   def showGraph(graph: Graph): Unit = {

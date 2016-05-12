@@ -8,6 +8,7 @@ import graphpack.TestGraph.test_graph
 import org.http4s._
 import org.http4s.dsl._
 import org.http4s.server.blaze.BlazeBuilder
+
 import scalaz.concurrent.Task
 
 //import scala.concurrent.{ExecutionContext, Future}
@@ -23,20 +24,19 @@ class GraphService(graph: Graph){
     StaticFile.fromString(path, Some(req))
       .map(Task.now)
       .getOrElse(Ok("Nooooooo."))
-//      .getOrElse(NotFound())
   }
+
+  val nongraph: String = "ceci n'est pas un graphique"
 
   def service = HttpService {
     case req @ GET -> Root =>
       fetchStatic("src/main/resources/index-dev.html", req)
 
+    case req @ GET -> Root / "dag" =>
+      Ok(nongraph)
+
     case req @ GET -> path =>
       fetchStatic("target/scala-2.11" + path.toString, req)
-
-//    case req @ GET -> Root / "slow-body" =>
-//      val resp = "Hello world!".map(_.toString())
-//      val body = awakeEvery(2.seconds).zipWith(Process.emitAll(resp))((_, c) => c)
-//      Ok(body)
   }
 }
 
