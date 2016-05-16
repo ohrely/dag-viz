@@ -1,9 +1,5 @@
 enablePlugins(ScalaJSPlugin)
 
-import com.lihaoyi.workbench.Plugin._
-
-workbenchSettings
-
 name := "DAGvizSF"
 
 version := "1.0"
@@ -28,11 +24,6 @@ libraryDependencies ++= Seq(
 persistLauncher := true
 //persistLauncher in Test := false
 //persistLauncher in Compile := true
-
-bootSnippet := "viz.VizUtil().main();"
-//mainClass in (Compile, run) := Some("viz.VizUtil().main()")
-
-updateBrowsers <<= updateBrowsers.triggeredBy(fullOptJS in Compile)
 
 // May ultimately be the better way to go:
 // val scalajsOutputDir = Def.settingKey[File](resourceDirectory.toString)
