@@ -21,7 +21,7 @@ import scalaz.concurrent.Task
 
 class GraphService(graph: Graph){
   def fetchStatic(path: String, req: Request) = {
-    StaticFile.fromString(path, Some(req))
+    StaticFile.fromResource(path, Some(req))
       .map(Task.now)
       .getOrElse(Ok("Nooooooo."))
   }
@@ -30,17 +30,17 @@ class GraphService(graph: Graph){
 
   def service = HttpService {
     case req @ GET -> Root =>
-      fetchStatic("src/main/resources/index-dev.html", req)
+      fetchStatic("/index-dev.html", req)
 
     case req @ GET -> Root / "dag" =>
       Ok(nongraph)
 
     case req @ GET -> path =>
-      fetchStatic("target/scala-2.11" + path.toString, req)
+      fetchStatic(path.toString, req)
   }
 }
 
-object SimpleServer extends App {
+object VizServer extends App {
   def runVizOnPort(graph: Graph = test_graph, port: Int) = {
     val s = new GraphService(graph)
 
